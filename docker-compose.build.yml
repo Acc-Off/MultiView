@@ -1,0 +1,7 @@
+# Override for building the image from this source tree instead of pulling the published one.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml up --build
+services:
+  multiview:
+    build: .
+    image: multiview:dev

@@ -1,0 +1,89 @@
+# Sample MultiView configuration.
+# Copy this file to config/config.yaml and fill in the values:
+#   cp config/config.yaml.example config/config.yaml
+
+# --- Required ---
+
+# YouTube Data API v3 key.
+youtube_api_key: "YOUR_YOUTUBE_API_KEY"
+
+# Client ID / secret of your Twitch application (used to obtain an App Access Token).
+twitch_client_id: "YOUR_TWITCH_CLIENT_ID"
+twitch_client_secret: "YOUR_TWITCH_CLIENT_SECRET"
+
+# Fixed token that protects the admin API, and manual refresh when it is not public.
+# It is checked against `Authorization: Bearer <admin_token>`. Use a long random string.
+admin_token: "CHANGE_ME_TO_A_LONG_RANDOM_SECRET"
+
+# --- Site appearance (optional; defaults or hidden when omitted) ---
+
+# Name of this site. Shown in the browser title, at the bottom of the navigation drawer and
+# on the settings page. Defaults to "MultiView".
+# site_name: "Our MultiView"
+
+# Links shown at the bottom of the navigation drawer. Nothing is shown when omitted.
+# `icon` is an mdi icon name (https://pictogrammers.com/library/mdi/). It is optional; a
+# generic link icon is used when omitted.
+# site_links:
+#   - label: "X"
+#     url: "https://x.com/your_account"
+#     icon: "mdiTwitter"
+#   - label: "Discord"
+#     url: "https://discord.gg/your_invite"
+#     icon: "mdiDiscord"
+
+# --- Update mode (optional; defaults apply when omitted) ---
+
+# Background polling on/off.
+# true (default): fetch once at start-up, then keep refreshing on a timer.
+# false: never fetch automatically. Data is refreshed only by manual refresh (POST /api/refresh).
+polling_enabled: true
+
+# Polling intervals for live and upcoming streams, in minutes (greater than 0). Used only
+# when polling_enabled is true. YouTube and Twitch run on separate timers: YouTube calls consume
+# quota, Twitch calls are practically unlimited. When the YouTube quota limit is reached,
+# Twitch keeps polling on its own interval.
+# YouTube interval (default 3). Increase it when you register many channels, to save quota.
+poll_interval_live_youtube_minutes: 3
+# Twitch interval (default 1). It can stay short because Twitch has no quota.
+poll_interval_live_twitch_minutes: 1
+
+# Polling interval for archives, in minutes (default 15). Used only when polling_enabled is true.
+poll_interval_archive_minutes: 15
+
+# Whether the manual refresh button is available to every visitor.
+# false (default): only holders of the admin token can refresh (everyone else gets 403).
+# true: anyone can call POST /api/refresh.
+public_refresh_enabled: false
+
+# --- YouTube quota estimate (optional) ---
+
+# Daily quota limit in units (default 10000).
+youtube_quota_limit: 10000
+
+# Fraction of the limit at which YouTube API calls stop (default 0.95 = 95%).
+quota_safety_margin: 0.95
+
+# --- Channels to show ---
+# For YouTube, `id` is the channel ID ("UCxxxx"). For Twitch, `id` is the login name
+# (upper/lower case does not matter). `name` is a label for your own reference; visitors see
+# the channel's real name, which the server fetches.
+#
+# YouTube channels must set both `live` and `video` (start-up fails when either is missing).
+#   live : true = poll this channel for live and upcoming streams (consumes YouTube quota).
+#          Set it to true only for channels that actually stream on YouTube, to save quota.
+#   video: true = fetch this channel's videos (archives, clips) for the video list.
+# Example: a streamer who goes live on Twitch and only uploads clips to YouTube
+#          -> live: false, video: true
+#
+# Twitch channels take no flags (the API is practically unlimited, so every registered
+# channel is watched for live streams).
+channels:
+  youtube:
+    - id: "UCxxxxxxxxxxxxxxxxxxxxxx"
+      name: "Sample YouTube channel"
+      live: true
+      video: true
+  twitch:
+    - id: "sample_twitch_login"
+      name: "Sample Twitch channel"

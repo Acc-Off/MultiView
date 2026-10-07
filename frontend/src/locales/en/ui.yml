@@ -1,0 +1,177 @@
+component:
+  apiError:
+    title: Gomenasorry!
+    text: There was an error retrieving content. Please try again in a little while.
+  channelInfo:
+    videoCount: '{0} Videos'
+    subscriberCount: '{n} Subscribers'
+    subscriberNA: Subscriber count unavailable
+  mainNav:
+    home: Home
+    favorites: Favorites
+    multiview: MultiView
+    channels: Channels
+    settings: Settings
+    search: Search
+    archive: Archive
+  videoCard:
+    clips: '{n} Clips'
+    watching: '{0} Watching'
+    liveNow: Live Now
+    edit: Edit
+    copiedToClipboard: Link copied to clipboard.
+    premiere: PREMIERE
+    totalTLs: Total live chat TLs
+    totalSongs: Total timestamped songs
+    tlPresence: Active translator in last 30 mins
+    uncertainPlaceholder: Start time is not officially confirmed, actual start time may vary.
+    typeScheduledYT: Draft Stream
+    typeExternalStream: External Stream
+    typeEventPlaceholder: Event
+  description:
+    showLess: Show Less
+    showMore: Show More
+  search:
+    searchLabel: Search
+    date: Last updated
+  paginateLoad:
+    newer: Newer
+    older: Older
+  music:
+    clearPlaylist: Clear
+  comment:
+    close: Close
+    readMore: Read more
+views:
+  home:
+    liveOrUpcomingHeading: Live / Upcoming
+    live: Live
+    upcoming: Upcoming
+  library:
+    deleteConfirmationCancel: Cancel
+    selectionReset: Reset
+  notFound:
+    title: Content not found
+    back: Return Home
+  search:
+    noResults: No results
+  settings:
+    title: Settings
+    darkModeLabel: Dark Mode
+    darkModeMsg: Changes the theme between light mode and dark mode
+    useEnglishNameLabel: Use English Name
+    useEnglishNameMsg: Uses English localized names for channels
+    hideVideoThumbnailsMsg: >-
+      Hide video thumbnails, helps speed up loading time and less scrolling on
+      mobile
+    scrollModeLabel: Scroll Mode
+    scrollModeMsg: Use scroll/tap to turn pages
+    resetAllSettingsWarning: You will lose all data. Continue?
+    defaultPage: Default Page
+    defaultPageMsg: >-
+      Open this page by default when visiting the site, or clicking on the
+      logo top left.
+    videoFeedSettings: Video Feed Settings
+    siteNavigationSettings: Site/Navigation
+    languageSettings: Language
+    gridSizeLabel: Thumbnail/Grid Size
+    gridSize:
+      - Small
+      - Medium
+      - Large
+    gridSizeMsg: Change thumbnail/video grid size on Home/Favorites page
+    hidePlaceholderStreams: Hide Placeholder Streams
+    hideMissingStreams: Hide Missing Streams
+    theme: Theme
+    moreSettings: More Settings
+    about: About This Site
+    quotaPaused: >-
+      Limit reached. YouTube live updates are paused until the quota resets at
+      midnight Pacific Time. Twitch live updates continue.
+    quotaDate: '{0} (PT)'
+    quotaUnavailable: Could not load quota usage
+    dataManagement: Data Management
+    exportData: Export
+    importData: Import
+    resetAllSettings: Reset All Settings
+    importDone: Import complete. The page will reload.
+    importFailed: Import failed (the file could not be parsed as JSON).
+  app:
+    update_text: Refresh
+    loading: Loading...
+    loginError: You don't have permission to refresh
+    untilOnline: Not yet fetched
+  channels:
+    title: Channels
+    searchLabel: Filter by channel name
+    empty: No registered channels
+    noMatch: No matching channels
+    filterAll: All
+    liveTarget: Live tracked
+    videoTarget: Videos tracked
+    favorite: Favorite
+    hidden: Hidden
+    hiddenHint: Also hidden from Home, Favorites and the stream selector
+    volume: Volume (shared with multiview)
+  favorites:
+    close: Close
+    showall: Show All
+  multiview:
+    confirmOverwrite: Overwrite current layout?
+    confirmOverwriteYes: Confirm
+    presets: Presets
+    addframe: Add Cell
+    muteOthers: Mute Others
+    muteOthersDetail: Mute all but one stream
+    autoLayoutTip: Click on a channel to start watching using auto layout mode
+    createLayoutTip: Create your own layout by adding a cell, or using a preset
+    openToolbarTip: Open the toolbar to start using multiview
+    archiveSync: Archive Sync
+    popoutChat: Pop out chat in a new window
+    chatArchiveUnavailable: Chat replay for archived streams cannot be embedded due to YouTube restrictions
+    preset:
+      custom: My Layouts
+      remove: Delete
+      desktop: Desktop
+      mobile: Mobile
+    presetEditor:
+      title: Save Layout
+      name: Name
+      autoLayout: Use layout in auto mode
+    video:
+      selectLive: Select Live
+      addCustomVideo: Add Custom Video
+      all: All
+      titleFilter: Filter by title (regex)
+      titleFilterInvalid: Invalid regex, matching as plain text
+    fullScreen: Fullscreen
+    mediaControls: Media Controls
+    mediaControlsEmpty: Videos being played will appear here
+    editAutoLayout: Edit Auto Layout
+    changeLayout: Change Layout
+    gridSnap:
+      label: Grid Snap
+    done: Done
+    hints: Hints
+    presetsHint: Open presets menu to switch layouts and configure auto layout
+    mediaControlsHint1: Use Media Controls to mute and sync (
+    mediaControlsHint2: ) live streams
+    dragDropHint: Drag and drop streams from toolbar to cells to organize streams
+    reorderHint: Use Reorder Layout menu to change video/chat positions
+    reorderLayout: Reorder Layout
+    reorderLayoutDetail: Drag and drop icons to the desired position
+    sync:
+      nothingToSync: >-
+        Nothing to sync, please open two overlapping archives (eg. collab
+        streams)
+      syncSettings: Sync Settings
+      syncSettingsDetail: >-
+        Videos are synced based on the stream start time, and can desync due to
+        mid stream technical issues or deleted portions. Use offsets to manually
+        align videos
+time:
+  soon: soon
+  diff_future_date: Starts {0} ({1})
+  distance_past_date: '{0}'
+  # Upcoming stream with no scheduled start time (start_scheduled absent). Shows the creation date (published_at).
+  start_undecided: 'Start TBD (created {0})'

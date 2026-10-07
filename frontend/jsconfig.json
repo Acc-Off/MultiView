@@ -1,0 +1,9 @@
+{
+    // This file is required for VSCode to understand webpack aliases
+    "compilerOptions": {
+        // baseUrl is removed in TS 7.0, so it is not used; paths are written in relative form, independent of baseUrl
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    }
+}

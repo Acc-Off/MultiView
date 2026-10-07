@@ -1,0 +1,32 @@
+# Dependencies
+**/node_modules/
+
+# Build output
+**/dist/
+frontend/stats.html
+
+# Local config and data (only config.yaml.example is committed)
+config/config.yaml
+data/
+
+# Per-instance files: copies of docker-compose.yml and their mount directories
+docker-compose_*.yml
+config_*/
+data_*/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs and caches
+**/*.log
+**/.cache/
+**/.vite/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp

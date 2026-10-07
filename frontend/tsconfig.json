@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "noImplicitAny": false,
+
+    "target": "esnext",
+    "module": "esnext",
+    "jsx": "preserve",
+    "isolatedModules": true,
+    "importHelpers": true,
+    "moduleResolution": "bundler",
+    "allowJs": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    // TODO: work towards enabling this
+    // "strictNullChecks": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "types": [
+      "chrome"
+    ],
+    // baseUrl is removed in TS 7.0, so it is not used; paths are written in relative form, independent of baseUrl
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,26 @@
+# Sample compose file. It runs the prebuilt image from GitHub Container Registry.
+#
+#   1. Copy config/config.yaml.example to config/config.yaml and fill it in.
+#   2. docker compose up -d
+#
+# To run several instances side by side, copy this file once per instance
+# (docker-compose_<NAME>.yml) and change `name`, `container_name`, the host port and the
+# mounted directories (config_<NAME>/, data_<NAME>/). Start each one with
+# `docker compose -f docker-compose_<NAME>.yml up -d`.
+# Give every instance its own `name`: instances that share a project name count as one
+# project, and `--remove-orphans` on one of them removes the containers of the others.
+name: multiview
+
+services:
+  multiview:
+    # `latest` follows the newest release. Pin a version (for example :1.0.0) to control upgrades.
+    image: ghcr.io/acc-off/multiview:latest
+    container_name: multiview
+    ports:
+      - "3000:3000"
+    volumes:
+      # Holds config.yaml (create it from config.yaml.example before the first start)
+      - ./config:/app/config
+      # SQLite database (archives, quota usage, caches) and downloaded channel icons
+      - ./data:/app/data
+    restart: unless-stopped

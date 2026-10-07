@@ -1,0 +1,32 @@
+# Dependencies and build output (rebuilt inside the image)
+**/node_modules
+**/dist
+
+# Local config and data (never baked into the image; supplied through volume mounts)
+config/config.yaml
+config_*/
+data/
+data_*/
+
+# Documentation and repository metadata
+docs/
+*.md
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# OS / editor
+**/.DS_Store
+**/Thumbs.db
+.vscode/
+.idea/
+
+# Logs and caches
+**/*.log
+**/.cache
+**/.vite
+
+# Compose files are not needed in the image.
+# (Dockerfile and .dockerignore must stay in the context, so they are not listed here.)
+docker-compose*.yml

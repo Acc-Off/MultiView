@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1.0,width=device-width" />
+    <title>Chat</title>
+    <style>
+        :root {
+            --bg: #fff;
+            --fg: #111;
+            --bar-bg: #f2f2f2;
+            --border: #ccc;
+        }
+
+        html.dark {
+            --bg: #0e0e10;
+            --fg: #efeff1;
+            --bar-bg: #18181b;
+            --border: #2a2a2d;
+        }
+
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bar {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px;
+            background: var(--bar-bg);
+            border-bottom: 1px solid var(--border);
+            flex: 0 0 auto;
+        }
+
+        .bar button {
+            flex: 0 0 auto;
+            width: 28px;
+            height: 28px;
+            line-height: 1;
+            font-size: 16px;
+            cursor: pointer;
+            background: transparent;
+            color: var(--fg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        .bar button:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        .bar select {
+            flex: 1 1 auto;
+            min-width: 0;
+            height: 28px;
+            font-size: 13px;
+            background: var(--bg);
+            color: var(--fg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0 4px;
+        }
+
+        .frame-wrap {
+            flex: 1 1 auto;
+            min-height: 0;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
+
+        .empty {
+            flex: 1 1 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            opacity: 0.7;
+            padding: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bar">
+        <button id="prev" type="button" title="Previous channel">&lsaquo;</button>
+        <select id="select"></select>
+        <button id="next" type="button" title="Next channel">&rsaquo;</button>
+    </div>
+    <div class="frame-wrap">
+        <iframe id="chat" frameborder="0" allowfullscreen></iframe>
+        <!-- Notice shown in place of the iframe when an archive is selected (toggled in apply()) -->
+        <div id="notice" class="empty" style="display: none; height: 100%">
+            Chat replay for archived streams cannot be embedded due to YouTube restrictions.
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var params = new URLSearchParams(window.location.search);
+            var parent = params.get("parent") || window.location.hostname;
+            var dark = params.get("dark") === "1";
+            if (dark) document.documentElement.classList.add("dark");
+
+            // This page is plain HTML outside the app bundle, so it carries its own messages.
+            // The opener passes the app's UI language; the markup above holds the English text.
+            var MESSAGES = {
+                en: {
+                    prev: "Previous channel",
+                    next: "Next channel",
+                    archived: "Chat replay for archived streams cannot be embedded due to YouTube restrictions.",
+                    empty: "There is no chat to show. Place a stream in MultiView, then open this window again.",
+                },
+                ja: {
+                    prev: "前のチャンネル",
+                    next: "次のチャンネル",
+                    archived: "アーカイブ配信のチャット（リプレイ）は、YouTube側の埋め込み制限のため表示できません。",
+                    empty: "表示できるチャットがありません。MultiView に配信を配置してから開き直してください。",
+                },
+            };
+            var lang = (params.get("lang") || navigator.language || "en").toLowerCase().indexOf("ja") === 0 ? "ja" : "en";
+            var t = MESSAGES[lang];
+            document.documentElement.lang = lang;
+
+            var list = [];
+            try {
+                list = JSON.parse(params.get("list") || "[]");
+            } catch (e) {
+                list = [];
+            }
+
+            var selectEl = document.getElementById("select");
+            var prevEl = document.getElementById("prev");
+            var nextEl = document.getElementById("next");
+            var chatEl = document.getElementById("chat");
+            var noticeEl = document.getElementById("notice");
+            var wrapEl = chatEl.parentNode;
+            prevEl.title = t.prev;
+            nextEl.title = t.next;
+            noticeEl.textContent = t.archived;
+
+            // Empty list (e.g. opened with no video cells)
+            if (!Array.isArray(list) || list.length === 0) {
+                document.querySelector(".bar").style.display = "none";
+                var msg = document.createElement("div");
+                msg.className = "empty";
+                msg.textContent = t.empty;
+                document.body.replaceChild(msg, wrapEl);
+                return;
+            }
+
+            // Ported as is from the chatLink logic in ChatCell.vue.
+            function chatLink(item) {
+                if (item.platform === "twitch") {
+                    return "https://www.twitch.tv/embed/" + encodeURIComponent(item.chatId)
+                        + "/chat?parent=" + encodeURIComponent(parent)
+                        + (dark ? "&darkpopout" : "");
+                }
+                return "https://www.youtube.com/live_chat?v=" + encodeURIComponent(item.videoId)
+                    + "&embed_domain=" + encodeURIComponent(parent)
+                    + (dark ? "&dark_theme=1" : "");
+            }
+
+            // Build the select options
+            list.forEach(function (item, index) {
+                var opt = document.createElement("option");
+                opt.value = String(index);
+                opt.textContent = item.name || ("Stream " + (index + 1));
+                selectEl.appendChild(opt);
+            });
+
+            var sel = parseInt(params.get("sel") || "0", 10);
+            if (isNaN(sel) || sel < 0 || sel >= list.length) sel = 0;
+
+            function apply() {
+                selectEl.value = String(sel);
+                prevEl.disabled = sel <= 0;
+                nextEl.disabled = sel >= list.length - 1;
+                var item = list[sel];
+                // Chat replay cannot be embedded for archives (a YouTube embed restriction), so switch to the notice
+                if (item.archived) {
+                    chatEl.style.display = "none";
+                    chatEl.removeAttribute("src");
+                    noticeEl.style.display = "flex";
+                } else {
+                    noticeEl.style.display = "none";
+                    chatEl.style.display = "block";
+                    chatEl.src = chatLink(item);
+                }
+                document.title = (item.name || "Chat") + " - Chat";
+            }
+
+            selectEl.addEventListener("change", function () {
+                sel = parseInt(selectEl.value, 10) || 0;
+                apply();
+            });
+            prevEl.addEventListener("click", function () {
+                if (sel > 0) { sel -= 1; apply(); }
+            });
+            nextEl.addEventListener("click", function () {
+                if (sel < list.length - 1) { sel += 1; apply(); }
+            });
+
+            apply();
+        })();
+    </script>
+</body>
+
+</html>
