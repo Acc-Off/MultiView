@@ -4,7 +4,7 @@ import type { LayoutItem } from "@/external/vue-grid-layout/src/helpers/utils";
 import { bottom, getFirstCollision } from "@/external/vue-grid-layout/src/helpers/utils";
 import {
  getDesktopDefaults, desktopPresets, mobilePresets, decodeLayout,
- generateContentId, GRID_COLS, GRID_ROWS, SNAP_STEPS, DEFAULT_SNAP_INDEX,
+ generateContentId, isTwitchVideo, GRID_COLS, GRID_ROWS, SNAP_STEPS, DEFAULT_SNAP_INDEX,
 } from "@/utils/mv-utils";
 import type { Content } from "@/utils/mv-utils";
 import debounce from "lodash-es/debounce";
@@ -37,9 +37,9 @@ function initialState() {
     };
 }
 
-const missingVideoDataFilter = (x: any) => x.type === "video" && x.video.type !== "twitch" && x.video.id === x.video.channel?.name && !(x?.video?.noData);
+const missingVideoDataFilter = (x: any) => x.type === "video" && !isTwitchVideo(x.video) && x.video.id === x.video.channel?.name && !(x?.video?.noData);
 // oembed is YouTube-only, so Twitch is excluded (sending a Twitch id returns 400).
-const videoIsLiveFilter = (x: any) => x?.video?.type !== "twitch"
+const videoIsLiveFilter = (x: any) => !isTwitchVideo(x?.video)
     && (x?.video?.status === "live" || x?.video?.status === "upcoming");
 
 // The debounced muteOthers implementation is kept outside the Pinia actions

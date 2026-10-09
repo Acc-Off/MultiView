@@ -539,7 +539,7 @@ Constants and encoding are in [`utils/mv-utils.ts`](../frontend/src/utils/mv-uti
 Layout encoding, used by presets and shared URLs:
 
 - Each of `x`, `y`, `w`, `h` is two characters from `A–Z a–z 0–9 - _` (value = first × 64 + second), so a cell starts with 8 characters.
-- An optional suffix gives the content: `chat<N>` for a chat cell bound to the N-th video (only a single digit is read back), `twitch<login>` for a Twitch channel, or an 11-character YouTube video ID.
+- An optional suffix gives the content: `chat<N>` for a chat cell bound to video N, `twitch<login>` for a Twitch channel, or an 11-character YouTube video ID. N is zero-based and counts the video cells in decoded order, that is, sorted by x, then y.
 - Cells are joined with commas. `AAAABsA8,BsAAAMA8chat0` is a 108 × 60 cell at the left and a 12 × 60 chat cell at x = 108.
 
 The share menu in the toolbar builds `/multiview/<encoded layout>` with video IDs included. The archive sync bar can add `?t=<unix seconds>` and `&offsets=<comma-separated seconds>`. Opening such a URL decodes it in `mounted()`; if a layout already exists, `LayoutChangePrompt` asks before replacing it. Titles and channels of the decoded YouTube videos are then filled in through oEmbed.

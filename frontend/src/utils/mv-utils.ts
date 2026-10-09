@@ -55,6 +55,13 @@ export const generateContentId = () => Array.from({ length: 8 })
     .join("");
 
 /**
+ * Twitch detection checks both type and platform. Videos added by click or by URL, or restored from a
+ * shared URL, have type === "twitch"; videos dropped onto a cell from the list keep the backend's type
+ * ("stream") and are only marked by channel.platform.
+ */
+export const isTwitchVideo = (video) => video?.type === "twitch" || video?.channel?.platform === "twitch";
+
+/**
  * Encodes a layout array and contents to a compact URI
  * @param {{layout, contents, includeVideo?}} layout and layout contents
  * @returns {string} encoded string
@@ -62,6 +69,16 @@ export const generateContentId = () => Array.from({ length: 8 })
 export function encodeLayout({ layout, contents, includeVideo = false }) {
     const l = [];
     try {
+        // A chat's currentTab indexes the video cells in layout array order, but decodeLayout rebuilds the
+        // layout sorted by x, then y. After a reorder or a drag the two orders differ, so translate the tab
+        // into the index its video will have once decoded.
+        const videoItems = layout.filter((item) => contents[item.i]?.type === "video");
+        const decodedOrder = [...videoItems].sort(sortLayout);
+        const toDecodedTab = (tab) => {
+            const index = decodedOrder.indexOf(videoItems[tab]);
+            return index >= 0 ? index : tab;
+        };
+
         layout.forEach((item) => {
             let encodedBlock = "";
             let invalid = false;
@@ -81,9 +98,9 @@ export function encodeLayout({ layout, contents, includeVideo = false }) {
                     id, type, video, currentTab,
                 } = contents[item.i];
                 if (type === "chat") {
-                    encodedBlock += `chat${currentTab || 0}`;
+                    encodedBlock += `chat${toDecodedTab(currentTab || 0)}`;
                 } else if (type === "video" && includeVideo) {
-                    if (video?.type === "twitch") {
+                    if (isTwitchVideo(video)) {
                         encodedBlock += `twitch${id}`;
                     } else {
                         encodedBlock += id;
@@ -140,7 +157,9 @@ export function decodeLayout(encodedStr) {
         videoCellCount += 1;
         layoutItem.i = index;
         if (isChat) {
-            const currentTab = idOrChat.length === 5 ? Number(idOrChat[4]) : -1;
+            // The tab index has two digits once a layout holds ten or more videos.
+            const tab = idOrChat.substring(4);
+            const currentTab = /^\d+$/.test(tab) ? Number(tab) : -1;
             parsedContent[index] = {
                 type: "chat",
                 ...(currentTab >= 0) && { currentTab },
